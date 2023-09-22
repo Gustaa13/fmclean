@@ -11,19 +11,40 @@ variables P Q R : Prop
 theorem doubleneg_intro :
   P → ¬¬P  :=
 begin
-  sorry,
+  intro p,
+  intro fp,
+  have f : false := fp(p),
+  exact f,
 end
 
 theorem doubleneg_elim :
   ¬¬P → P  :=
 begin
-  sorry,
+  intro ffp,
+  by_cases p_ou_fp : P,
+  {
+    exact p_ou_fp,
+  },
+  {
+    have f : false := ffp(p_ou_fp),
+    contradiction,
+  },
 end
 
 theorem doubleneg_law :
   ¬¬P ↔ P  :=
 begin
-  sorry,
+  split,
+  {
+    intro ffp,
+    have p := doubleneg_elim P (ffp),
+    exact p,
+  },
+  {
+    intros p fp,
+    have f : false := fp(p),
+    exact f,
+  },
 end
 
 ------------------------------------------------
@@ -33,13 +54,30 @@ end
 theorem disj_comm :
   (P ∨ Q) → (Q ∨ P)  :=
 begin
-  sorry,
+  intro p_ou_q,
+  cases p_ou_q with p q,
+  {
+    right,
+    exact p,
+  }, 
+  {
+    left,
+    exact q,
+  },
 end
 
 theorem conj_comm :
   (P ∧ Q) → (Q ∧ P)  :=
 begin
-  sorry,
+  intro p_e_q,
+  cases p_e_q with p q,
+  split,
+  {
+    exact q,
+  },
+  {
+    exact p,
+  },
 end
 
 
@@ -50,13 +88,29 @@ end
 theorem impl_as_disj_converse :
   (¬P ∨ Q) → (P → Q)  :=
 begin
-  sorry,
+  intros fp_ou_q p,
+  cases fp_ou_q with fp q,
+  {
+    have f : false := fp(p),
+    contradiction,
+  },
+  {
+    exact q,
+  },
 end
 
 theorem disj_as_impl :
   (P ∨ Q) → (¬P → Q)  :=
 begin
-  sorry,
+  intros p_ou_q fp,
+  cases p_ou_q with p q,
+  {
+    have f : false := fp(p),
+    contradiction,
+  },
+  {
+    exact q,
+  },
 end
 
 
@@ -67,19 +121,43 @@ end
 theorem impl_as_contrapositive :
   (P → Q) → (¬Q → ¬P)  :=
 begin
-  sorry,
+  intros p_imp_q fq p,
+  have q : Q := p_imp_q(p),
+  have f : false := fq(q),
+  exact f,
 end
 
 theorem impl_as_contrapositive_converse :
   (¬Q → ¬P) → (P → Q)  :=
 begin
-  sorry,
+  intros fq_imp_fp p,
+  by_cases q_ou_fq : Q,
+  {
+    exact q_ou_fq,
+  },
+  {
+    have fp : ¬P := fq_imp_fp(q_ou_fq),
+    have f : false := fp(p),
+    contradiction,
+  },
 end
 
 theorem contrapositive_law :
   (P → Q) ↔ (¬Q → ¬P)  :=
 begin
-  sorry,
+  split,
+  {
+    intros p_imp_q fq p,
+    have q : Q := p_imp_q(p),
+    have f : false := fq(q),
+    exact f,
+  },
+  {
+    intros fq_imp_fp p,
+    have p_imp_q : P → Q := impl_as_contrapositive_converse P Q (fq_imp_fp),
+    have q : Q := p_imp_q(p),
+    exact q,
+  },
 end
 
 
@@ -90,7 +168,17 @@ end
 theorem lem_irrefutable :
   ¬¬(P∨¬P)  :=
 begin
-  sorry,
+  intro f_p_ou_fp,
+  apply f_p_ou_fp,
+  right,
+  intro p,
+  have p_ou_fq : P ∨ ¬P,
+  {
+    left,
+    exact p,
+  },
+  have f : false := f_p_ou_fp(p_ou_fq),
+  exact f,
 end
 
 
@@ -101,7 +189,16 @@ end
 theorem peirce_law_weak :
   ((P → Q) → P) → ¬¬P  :=
 begin
-  sorry,
+  intros p_imp_q__imp_p fp, 
+  have p_imp_q : P → Q,
+  {
+    intro p,
+    have f : false := fp(p),
+    contradiction,
+  },
+  have p : P := p_imp_q__imp_p(p_imp_q),
+  have f : false := fp(p),
+  contradiction,
 end
 
 
